@@ -1,5 +1,6 @@
 package cn.edu.nju.supercode.po;
 
+import cn.edu.nju.supercode.vo.RetUserVO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,4 +39,13 @@ public class User {
     @Basic
     @Column(name = "role", nullable = false)
     private String role;
+
+    public RetUserVO toRetVO(){
+        RetUserVO retUserVO=new RetUserVO();
+        retUserVO.setUsername(username);
+        retUserVO.setName(name);
+        retUserVO.setEmail(email);
+        retUserVO.setRole(role);
+        return retUserVO;
+    }
 }

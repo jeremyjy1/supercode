@@ -28,4 +28,12 @@ public class SuperCodeException extends RuntimeException {
     public static Exception userNotExisted() {
         throw new SuperCodeException("用户不存在");
     }
+
+    public static Exception noSuchPrivilege() {
+        throw new SuperCodeException("用户无权执行本操作");
+    }
+
+    public static Exception wrongPassword(){throw new SuperCodeException("旧密码不正确");}
+
+    public static Exception samePassword(){throw new SuperCodeException("新旧密码不可以相同");}
 }
