@@ -19,8 +19,8 @@ public class UserVO {
     public User toPO(){
         User user=new User();
         user.setUsername(username);
-        user.setSalt(RandomStringUtils.randomAlphanumeric(128));
-        user.setPassword(DigestUtils.sha512Hex(password+user.getSalt()));
+        user.setSalt(RandomStringUtils.randomAlphanumeric(128));//生成盐
+        user.setPassword(DigestUtils.sha512Hex(password+user.getSalt()));//生成处理后的密码
         user.setName(name);
         user.setEmail(email);
         user.setRole(role);

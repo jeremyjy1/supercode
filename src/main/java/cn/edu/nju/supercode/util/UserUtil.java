@@ -24,9 +24,25 @@ public class UserUtil {
                 token = cookie.getValue();
                 break;
             }
-        }
+        }//从cookie当中取出token
         if (!tokenUtil.verifyToken(token))
             throw SuperCodeException.loginRequired();
         return tokenUtil.getUser(token);
+    }
+
+    public boolean isAdmin(User user){
+        return Objects.equals(user.getRole(), "admin") || Objects.equals(user.getRole(), "root");
+    }
+
+    public boolean canOperate(User operator,User operatee){
+        if(operator==null||operatee==null)
+            return false;
+        if(Objects.equals(operator.getRole(), "root") && !Objects.equals(operatee.getRole(), "root"))
+            return true;
+        return Objects.equals(operator.getRole(), "admin") && Objects.equals(operatee.getRole(), "user");
+    }
+
+    public boolean isSelf(User operator,User operatee){
+        return Objects.equals(operator.getUuid(), operatee.getUuid());
     }
 }

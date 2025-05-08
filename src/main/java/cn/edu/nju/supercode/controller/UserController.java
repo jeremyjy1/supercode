@@ -2,6 +2,7 @@ package cn.edu.nju.supercode.controller;
 
 import cn.edu.nju.supercode.exception.SuperCodeException;
 import cn.edu.nju.supercode.po.User;
+import cn.edu.nju.supercode.repository.UserRepository;
 import cn.edu.nju.supercode.service.UserService;
 import cn.edu.nju.supercode.util.UserUtil;
 import cn.edu.nju.supercode.vo.*;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @CrossOrigin
@@ -23,6 +23,9 @@ public class UserController {
 
     @Autowired
     UserUtil userUtil;
+
+    @Autowired
+    UserRepository userRepository;
 
     @PostMapping("")
     public ResultVO<String> createUser(@RequestBody UserVO userVO) throws Exception {
@@ -37,24 +40,24 @@ public class UserController {
         cookie.setPath("/");
         cookie.setMaxAge(24*60*60);
         request.addCookie(cookie);
-        request.addHeader("token",result);
+        request.addHeader("token",result);//设定cookie
         return ResultVO.buildSuccess(result);
     }
 
     @PostMapping("/changeRole")
     public ResultVO<String> login(@RequestBody ChangeRoleVO changeRoleVO, HttpServletRequest request) throws Exception {
-        User user=userUtil.getUser(request);
-        if(!Objects.equals(user.getRole(), "root"))
-            throw SuperCodeException.noSuchPrivilege();
+        User operator=userUtil.getUser(request),operatee=userRepository.findByUsername(changeRoleVO.getUsername());
+        if(!userUtil.canOperate(operator,operatee))
+            throw SuperCodeException.noSuchPrivilege();//只有root和admin有权改变用户的权限
         userService.changeRole(changeRoleVO);
         return ResultVO.buildSuccess("更新权限成功");
     }
 
     @PostMapping("/resetPassword/{username}")
     public ResultVO<String> resetPassword(@PathVariable String username, HttpServletRequest request) throws Exception {
-        User user=userUtil.getUser(request);
-        if(!Objects.equals(user.getRole(), "root")&&!Objects.equals(user.getRole(), "admin"))
-            throw SuperCodeException.noSuchPrivilege();
+        User operator=userUtil.getUser(request),operatee=userRepository.findByUsername(username);
+        if(!userUtil.canOperate(operator,operatee))
+            throw SuperCodeException.noSuchPrivilege();//只有root和admin有权重置密码
         userService.resetPassword(username);
         return ResultVO.buildSuccess("密码重置成功");
     }
@@ -69,22 +72,35 @@ public class UserController {
     @GetMapping("/getUsers")
     public ResultVO<List<RetUserVO>> getUsers(HttpServletRequest request) throws Exception {
         User user=userUtil.getUser(request);
-        if(!Objects.equals(user.getRole(), "root")&&!Objects.equals(user.getRole(), "admin"))
-            throw SuperCodeException.noSuchPrivilege();
+        if(!userUtil.isAdmin(user))
+            throw SuperCodeException.noSuchPrivilege();//只有root和admin有权获取全部用户
         return ResultVO.buildSuccess(userService.getUsers());
     }
 
-    @PostMapping("/updateUser")
+    @DeleteMapping("/{username}")
+    public ResultVO<String> deleteUser(@PathVariable String username, HttpServletRequest request) throws Exception {
+        User operator=userUtil.getUser(request),operatee=userRepository.findByUsername(username);
+         if(!userUtil.canOperate(operator,operatee))
+            throw SuperCodeException.noSuchPrivilege();//只有root和admin有权删除用户
+        userService.deleteUser(username);
+        return ResultVO.buildSuccess("删除用户成功");
+    }
+
+    /**
+     *
+     * @return token
+     */
+    @PutMapping("/updateUser")
     public ResultVO<String> updateUser(HttpServletRequest request, @RequestBody UpdateUserVO updateUserVO) throws Exception {
-        User user=userUtil.getUser(request);
-        if(!Objects.equals(user.getRole(), "root")&&!Objects.equals(user.getRole(), "admin")&& !Objects.equals(user.getUsername(), updateUserVO.getUsername()))
-            throw SuperCodeException.noSuchPrivilege();
+        User operator=userUtil.getUser(request),operatee=userRepository.findByUsername(updateUserVO.getUsername());
+        if(!userUtil.canOperate(operator,operatee)&&!userUtil.isSelf(operator,operatee))
+            throw SuperCodeException.noSuchPrivilege();//要不是更新自己的信息，要不是管理员在更新他人的信息
         userService.updateUser(updateUserVO);
         return ResultVO.buildSuccess("更新信息成功");
     }
 
     @GetMapping("/profile")
-    public ResultVO<RetUserVO> getProfile(HttpServletRequest request){
+    public ResultVO<RetUserVO> getProfile(HttpServletRequest request){//获取个人信息
         User user=userUtil.getUser(request);
         return ResultVO.buildSuccess(userService.getProfile(user));
     }

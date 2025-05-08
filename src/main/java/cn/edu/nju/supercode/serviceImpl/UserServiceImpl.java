@@ -26,16 +26,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createUser(UserVO user) throws Exception{
         if(!Objects.equals(user.getRole(), "user"))
-            throw SuperCodeException.createFail();
+            throw SuperCodeException.createFail();//只能允许创建类型为user的用户，后期再进行授权
         if(userRepository.findByUsername(user.getUsername())!=null)
-            throw SuperCodeException.userExisted();
+            throw SuperCodeException.userExisted();//用户不可以和已有用户重名
         userRepository.save(user.toPO());
     }
 
     @Override
     public String login(String username,String password) {
             User user=userRepository.findByUsername(username);
-            if(user!=null&& Objects.equals(user.getPassword(), DigestUtils.sha512Hex(password + user.getSalt())))
+            if(user!=null&& Objects.equals(user.getPassword(), DigestUtils.sha512Hex(password + user.getSalt())))//验证密码
                 return tokenUtil.getToken(user);
             throw SuperCodeException.loginFailure();
     }
@@ -43,9 +43,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changeRole(ChangeRoleVO changeRoleVO) throws Exception {
         User user=userRepository.findByUsername(changeRoleVO.getUsername());
-        if(user!=null&& !Objects.equals(user.getRole(), "root"))
+        if(user!=null&& !Objects.equals(user.getRole(), "root"))//不可以修改root用户的用户类型
         {
-            if(Objects.equals(changeRoleVO.getRole(), "user") || Objects.equals(changeRoleVO.getRole(), "admin"))
+            if(Objects.equals(changeRoleVO.getRole(), "user") || Objects.equals(changeRoleVO.getRole(), "admin"))//不可以把用户修改为root
             {
                 user.setRole(changeRoleVO.getRole());
                 userRepository.save(user);
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
         User user=userRepository.findByUsername(username);
         if(user!=null)
         {
-            user.setSalt(RandomStringUtils.randomAlphanumeric(128));
+            user.setSalt(RandomStringUtils.randomAlphanumeric(128));//创建新盐来确保安全性
             user.setPassword(DigestUtils.sha512Hex(username+user.getSalt()));
             userRepository.save(user);
             return;
@@ -71,10 +71,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changePassword(User user, PasswordVO passwordVO) throws Exception {
         if(Objects.equals(passwordVO.getOldPassword(), passwordVO.getNewPassword()))
-            throw SuperCodeException.samePassword();
+            throw SuperCodeException.samePassword();//新密码不可以和旧密码相同
         if(!DigestUtils.sha512Hex(passwordVO.getOldPassword() + user.getSalt()).equals(user.getPassword()))
-            throw SuperCodeException.wrongPassword();
-        user.setSalt(RandomStringUtils.randomAlphanumeric(128));
+            throw SuperCodeException.wrongPassword();//密码验证通过才可以修改
+        user.setSalt(RandomStringUtils.randomAlphanumeric(128));//创建新盐来确保安全性
         user.setPassword(DigestUtils.sha512Hex(passwordVO.getNewPassword()+user.getSalt()));
         userRepository.save(user);
     }
@@ -94,9 +94,18 @@ public class UserServiceImpl implements UserService {
         if(user==null)
             throw SuperCodeException.userNotExisted();
         user.setName(updateUserVO.getName());
-        user.setEmail(updateUserVO.getEmail());
+        user.setEmail(updateUserVO.getEmail());//部分修改字段
         userRepository.save(user);
     }
+
+    @Override
+    public void deleteUser(String username) throws Exception {
+        User user=userRepository.findByUsername(username);
+        if(user==null)
+            throw SuperCodeException.userNotExisted();
+        userRepository.delete(user);
+    }
+
 
     @Override
     public RetUserVO getProfile(User user) {

@@ -10,7 +10,7 @@ import java.util.List;
 public interface UserService {
     void createUser(UserVO user) throws Exception;
 
-    String login(String username,String password);
+    String login(String username,String password);//返回的string为登录成功时得到的token
 
     void changeRole(ChangeRoleVO changeRoleVO) throws Exception;
 
@@ -21,6 +21,8 @@ public interface UserService {
     List<RetUserVO> getUsers();
 
     void updateUser(UpdateUserVO updateUserVO) throws Exception;
+
+    void deleteUser(String username) throws Exception;
 
     RetUserVO getProfile(User user);
 }

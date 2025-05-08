@@ -25,15 +25,18 @@ public class SuperCodeException extends RuntimeException {
         throw new SuperCodeException("更新用户信息失败");
     }
 
-    public static Exception userNotExisted() {
+    public static SuperCodeException userNotExisted() {
         throw new SuperCodeException("用户不存在");
     }
 
-    public static Exception noSuchPrivilege() {
+    public static SuperCodeException noSuchPrivilege() {
         throw new SuperCodeException("用户无权执行本操作");
     }
 
-    public static Exception wrongPassword(){throw new SuperCodeException("旧密码不正确");}
+    public static SuperCodeException wrongPassword(){throw new SuperCodeException("旧密码不正确");}
 
-    public static Exception samePassword(){throw new SuperCodeException("新旧密码不可以相同");}
+    public static SuperCodeException samePassword(){throw new SuperCodeException("新旧密码不可以相同");}
+
+    public static SuperCodeException problemNotFound(){throw new SuperCodeException("题目不存在");}
+
 }
