@@ -1,6 +1,6 @@
 package cn.edu.nju.supercode.util;
 
-import cn.edu.nju.supercode.exception.SuperCodeException;
+import cn.edu.nju.supercode.exception.LoginException;
 import cn.edu.nju.supercode.po.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,10 +14,10 @@ public class UserUtil {
     @Autowired
     TokenUtil tokenUtil;
 
-    public User getUser(HttpServletRequest request) throws SuperCodeException {
+    public User getUser(HttpServletRequest request) throws LoginException {
         Cookie[] cookies = request.getCookies();
         if (cookies == null)
-            throw SuperCodeException.loginRequired();
+            throw LoginException.loginRequired();
         String token = null;
         for (Cookie cookie : cookies) {
             if (Objects.equals(cookie.getName(), "token")) {
@@ -26,7 +26,7 @@ public class UserUtil {
             }
         }//从cookie当中取出token
         if (!tokenUtil.verifyToken(token))
-            throw SuperCodeException.loginRequired();
+            throw LoginException.loginRequired();
         return tokenUtil.getUser(token);
     }
 

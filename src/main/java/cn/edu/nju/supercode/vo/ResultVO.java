@@ -22,4 +22,8 @@ public class ResultVO<T> implements Serializable {
     public static <T> ResultVO<String> buildFailure(String msg) {
         return new ResultVO<String>(400, null, msg);
     }
+
+    public static <T> ResultVO<String> notLogin(String msg) {
+        return new ResultVO<String>(401, null, msg);
+    }
 }
