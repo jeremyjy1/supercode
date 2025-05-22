@@ -19,11 +19,19 @@ public class ResultVO<T> implements Serializable {
         return new ResultVO<T>(200, data, null);
     }
 
-    public static <T> ResultVO<String> buildFailure(String msg) {
-        return new ResultVO<String>(400, null, msg);
-    }
-
     public static <T> ResultVO<String> notLogin(String msg) {
         return new ResultVO<String>(401, null, msg);
+    }
+
+    public static <T> ResultVO<String> forbidden(String msg) {
+        return new ResultVO<String>(403, null, msg);
+    }
+
+    public static <T> ResultVO<String> notFound(String msg) {
+        return new ResultVO<String>(404, null, msg);
+    }
+
+    public static <T> ResultVO<String> conflict(String msg) {
+        return new ResultVO<String>(409, null, msg);
     }
 }

@@ -1,6 +1,6 @@
 package cn.edu.nju.supercode.serviceImpl;
 
-import cn.edu.nju.supercode.exception.SuperCodeException;
+import cn.edu.nju.supercode.exception.*;
 import cn.edu.nju.supercode.po.User;
 import cn.edu.nju.supercode.repository.UserRepository;
 import cn.edu.nju.supercode.service.UserService;
@@ -26,9 +26,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createUser(UserVO user) throws Exception{
         if(!Objects.equals(user.getRole(), "user"))
-            throw SuperCodeException.createFail();//只能允许创建类型为user的用户，后期再进行授权
+            throw UnauthorizedException.noSuchPrivilege();//只能允许创建类型为user的用户，后期再进行授权
         if(userRepository.findByUsername(user.getUsername())!=null)
-            throw SuperCodeException.userExisted();//用户不可以和已有用户重名
+            throw ConflictException.userExisted();//用户不可以和已有用户重名
         userRepository.save(user.toPO());
     }
 
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
             User user=userRepository.findByUsername(username);
             if(user!=null&& Objects.equals(user.getPassword(), DigestUtils.sha512Hex(password + user.getSalt())))//验证密码
                 return tokenUtil.getToken(user);
-            throw SuperCodeException.loginFailure();
+            throw LoginException.wrongUsernameOrPassword();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
                 return;
             }
         }
-        throw SuperCodeException.updateFailed();
+        throw UnauthorizedException.noSuchPrivilege();
     }
 
     @Override
@@ -65,15 +65,13 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
             return;
         }
-        throw SuperCodeException.userNotExisted();
+        throw NotFoundException.userNotExisted();
     }
 
     @Override
     public void changePassword(User user, PasswordVO passwordVO) throws Exception {
-        if(Objects.equals(passwordVO.getOldPassword(), passwordVO.getNewPassword()))
-            throw SuperCodeException.samePassword();//新密码不可以和旧密码相同
         if(!DigestUtils.sha512Hex(passwordVO.getOldPassword() + user.getSalt()).equals(user.getPassword()))
-            throw SuperCodeException.wrongPassword();//密码验证通过才可以修改
+            throw LoginException.wrongPassword();//密码验证通过才可以修改
         user.setSalt(RandomStringUtils.randomAlphanumeric(128));//创建新盐来确保安全性
         user.setPassword(DigestUtils.sha512Hex(passwordVO.getNewPassword()+user.getSalt()));
         userRepository.save(user);
@@ -92,8 +90,8 @@ public class UserServiceImpl implements UserService {
     public void updateUser(UpdateUserVO updateUserVO) throws Exception {
         User user=userRepository.findByUsername(updateUserVO.getUsername());
         if(user==null)
-            throw SuperCodeException.userNotExisted();
-        user.setName(updateUserVO.getName());
+            throw NotFoundException.userNotExisted();
+        user.setNickname(updateUserVO.getName());
         user.setEmail(updateUserVO.getEmail());//部分修改字段
         userRepository.save(user);
     }
@@ -102,7 +100,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String username) throws Exception {
         User user=userRepository.findByUsername(username);
         if(user==null)
-            throw SuperCodeException.userNotExisted();
+            throw NotFoundException.userNotExisted();
         userRepository.delete(user);
     }
 

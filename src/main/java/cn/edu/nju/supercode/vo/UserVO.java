@@ -13,7 +13,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 public class UserVO {
     private String username;
     private String password;
-    private String name;
+    private String nickname;
     private String email;
     private String role;
     public User toPO(){
@@ -21,7 +21,7 @@ public class UserVO {
         user.setUsername(username);
         user.setSalt(RandomStringUtils.randomAlphanumeric(128));//生成盐
         user.setPassword(DigestUtils.sha512Hex(password+user.getSalt()));//生成处理后的密码
-        user.setName(name);
+        user.setNickname(nickname);
         user.setEmail(email);
         user.setRole(role);
         return user;

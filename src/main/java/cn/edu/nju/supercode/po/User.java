@@ -29,8 +29,8 @@ public class User {
     private String salt;
 
     @Basic
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "nickname", nullable = false)
+    private String nickname;
 
     @Basic
     @Column(name = "email")
@@ -43,7 +43,7 @@ public class User {
     public RetUserVO toRetVO(){
         RetUserVO retUserVO=new RetUserVO();
         retUserVO.setUsername(username);
-        retUserVO.setName(name);
+        retUserVO.setNickname(nickname);
         retUserVO.setEmail(email);
         retUserVO.setRole(role);
         return retUserVO;

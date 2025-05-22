@@ -4,16 +4,25 @@ import cn.edu.nju.supercode.vo.ResultVO;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Objects;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(value = SuperCodeException.class)
-    public ResultVO<String> handleAllExternalException(SuperCodeException e) {
-        return ResultVO.buildFailure(e.getMessage());
-    }
     @ExceptionHandler(value = LoginException.class)
     public ResultVO<String> handleLoginException(LoginException e) {
         return ResultVO.notLogin(e.getMessage());
+    }
+
+    @ExceptionHandler(value = UnauthorizedException.class)
+    public ResultVO<String> handleUnauthorizedException(UnauthorizedException e) {
+        return ResultVO.forbidden(e.getMessage());
+    }
+
+    @ExceptionHandler(value = NotFoundException.class)
+    public ResultVO<String> handleNotFoundException(NotFoundException e) {
+        return ResultVO.notFound(e.getMessage());
+    }
+
+    @ExceptionHandler(value = ConflictException.class)
+    public ResultVO<String> handleConflictException(ConflictException e) {
+        return ResultVO.conflict(e.getMessage());
     }
 }

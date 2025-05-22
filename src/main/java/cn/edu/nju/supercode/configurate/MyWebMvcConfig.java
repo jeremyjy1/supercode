@@ -28,7 +28,6 @@ public class MyWebMvcConfig implements WebMvcConfigurer {
         registry
                 .addInterceptor(loginInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/api/accounts")
-                .excludePathPatterns("/api/accounts/login");
+                .excludePathPatterns("/api/v1/user/login");
     }
 }

@@ -1,6 +1,6 @@
 package cn.edu.nju.supercode.controller;
 
-import cn.edu.nju.supercode.exception.SuperCodeException;
+import cn.edu.nju.supercode.exception.UnauthorizedException;
 import cn.edu.nju.supercode.po.User;
 import cn.edu.nju.supercode.service.ProblemService;
 import cn.edu.nju.supercode.util.UserUtil;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/problem")
+@RequestMapping("/api/v1/problem")
 public class ProblemController {
 
     @Autowired
@@ -22,11 +22,11 @@ public class ProblemController {
     @Autowired
     ProblemService problemService;
 
-    @PostMapping("")
+    @PostMapping("/create")
     public ResultVO<String> createProblem(HttpServletRequest request,@RequestBody ProblemVO problemVO) throws Exception{
         User operator=userUtil.getUser(request);
         if(!userUtil.isAdmin(operator))
-            throw SuperCodeException.noSuchPrivilege();//只有root和admin有权创建题目
+            throw UnauthorizedException.noSuchPrivilege();//只有root和admin有权创建题目
         problemService.createProblem(problemVO);
         return ResultVO.buildSuccess("题目创建成功");
     }
@@ -45,7 +45,7 @@ public class ProblemController {
     public ResultVO<String>deleteProblem(@PathVariable String uuid,HttpServletRequest request) throws Exception{
         User operator=userUtil.getUser(request);
         if(!userUtil.isAdmin(operator))
-            throw SuperCodeException.noSuchPrivilege();//只有root和admin有权删除题目
+            throw UnauthorizedException.noSuchPrivilege();//只有root和admin有权删除题目
         problemService.deleteProblem(uuid);
         return ResultVO.buildSuccess("题目删除成功");
     }
@@ -54,7 +54,7 @@ public class ProblemController {
     public ResultVO<String>updateProblem(HttpServletRequest request,@RequestBody ProblemVO problemVO) throws Exception{
         User operator=userUtil.getUser(request);
         if(!userUtil.isAdmin(operator))
-            throw SuperCodeException.noSuchPrivilege();//只有root和admin有权更新题目
+            throw UnauthorizedException.noSuchPrivilege();//只有root和admin有权更新题目
         problemService.updateProblem(problemVO);
         return ResultVO.buildSuccess("题目更新成功");
     }

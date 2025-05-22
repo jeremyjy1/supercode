@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RetUserVO {
     private String username;
-    private String name;
+    private String nickname;
     private String email;
     private String role;
 }

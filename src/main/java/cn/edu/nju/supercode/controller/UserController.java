@@ -1,6 +1,6 @@
 package cn.edu.nju.supercode.controller;
 
-import cn.edu.nju.supercode.exception.SuperCodeException;
+import cn.edu.nju.supercode.exception.UnauthorizedException;
 import cn.edu.nju.supercode.po.User;
 import cn.edu.nju.supercode.repository.UserRepository;
 import cn.edu.nju.supercode.service.UserService;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/accounts")
+@RequestMapping("/api/v1/user")
 public class UserController {
     @Autowired
     UserService userService;
@@ -27,10 +27,13 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping("")
-    public ResultVO<String> createUser(@RequestBody UserVO userVO) throws Exception {
+    @PostMapping("/create")
+    public ResultVO<String> createUser(HttpServletRequest request,@RequestBody UserVO userVO) throws Exception {
+        User user=userUtil.getUser(request);
+        if(!userUtil.isAdmin(user))
+            throw UnauthorizedException.noSuchPrivilege();
         userService.createUser(userVO);
-        return ResultVO.buildSuccess("注册成功");
+        return ResultVO.buildSuccess("创建用户成功");
     }
 
     @PostMapping("/login")
@@ -41,14 +44,14 @@ public class UserController {
         cookie.setMaxAge(24*60*60);
         request.addCookie(cookie);
         request.addHeader("token",result);//设定cookie
-        return ResultVO.buildSuccess(result);
+        return ResultVO.buildSuccess("登录成功");
     }
 
     @PostMapping("/changeRole")
     public ResultVO<String> login(@RequestBody ChangeRoleVO changeRoleVO, HttpServletRequest request) throws Exception {
         User operator=userUtil.getUser(request),operatee=userRepository.findByUsername(changeRoleVO.getUsername());
         if(!userUtil.canOperate(operator,operatee))
-            throw SuperCodeException.noSuchPrivilege();//只有root和admin有权改变用户的权限
+            throw UnauthorizedException.noSuchPrivilege();//只有root和admin有权改变用户的权限
         userService.changeRole(changeRoleVO);
         return ResultVO.buildSuccess("更新权限成功");
     }
@@ -57,12 +60,12 @@ public class UserController {
     public ResultVO<String> resetPassword(@PathVariable String username, HttpServletRequest request) throws Exception {
         User operator=userUtil.getUser(request),operatee=userRepository.findByUsername(username);
         if(!userUtil.canOperate(operator,operatee))
-            throw SuperCodeException.noSuchPrivilege();//只有root和admin有权重置密码
+            throw UnauthorizedException.noSuchPrivilege();//只有root和admin有权重置密码
         userService.resetPassword(username);
         return ResultVO.buildSuccess("密码重置成功");
     }
 
-    @PostMapping("/changePassword")
+    @PostMapping("/password")
     public ResultVO<String> changePassword(@RequestBody PasswordVO passwordVO, HttpServletRequest request) throws Exception {
         User user=userUtil.getUser(request);
         userService.changePassword(user,passwordVO);
@@ -73,7 +76,7 @@ public class UserController {
     public ResultVO<List<RetUserVO>> getUsers(HttpServletRequest request) throws Exception {
         User user=userUtil.getUser(request);
         if(!userUtil.isAdmin(user))
-            throw SuperCodeException.noSuchPrivilege();//只有root和admin有权获取全部用户
+            throw UnauthorizedException.noSuchPrivilege();//只有root和admin有权获取全部用户
         return ResultVO.buildSuccess(userService.getUsers());
     }
 
@@ -81,25 +84,21 @@ public class UserController {
     public ResultVO<String> deleteUser(@PathVariable String username, HttpServletRequest request) throws Exception {
         User operator=userUtil.getUser(request),operatee=userRepository.findByUsername(username);
          if(!userUtil.canOperate(operator,operatee))
-            throw SuperCodeException.noSuchPrivilege();//只有root和admin有权删除用户
+            throw UnauthorizedException.noSuchPrivilege();//只有root和admin有权删除用户
         userService.deleteUser(username);
         return ResultVO.buildSuccess("删除用户成功");
     }
 
-    /**
-     *
-     * @return token
-     */
     @PutMapping("/updateUser")
     public ResultVO<String> updateUser(HttpServletRequest request, @RequestBody UpdateUserVO updateUserVO) throws Exception {
         User operator=userUtil.getUser(request),operatee=userRepository.findByUsername(updateUserVO.getUsername());
         if(!userUtil.canOperate(operator,operatee)&&!userUtil.isSelf(operator,operatee))
-            throw SuperCodeException.noSuchPrivilege();//要不是更新自己的信息，要不是管理员在更新他人的信息
+            throw UnauthorizedException.noSuchPrivilege();//要不是更新自己的信息，要不是管理员在更新他人的信息
         userService.updateUser(updateUserVO);
         return ResultVO.buildSuccess("更新信息成功");
     }
 
-    @GetMapping("/profile")
+    @GetMapping("")
     public ResultVO<RetUserVO> getProfile(HttpServletRequest request){//获取个人信息
         User user=userUtil.getUser(request);
         return ResultVO.buildSuccess(userService.getProfile(user));
