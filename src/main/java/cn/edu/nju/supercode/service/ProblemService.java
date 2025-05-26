@@ -8,13 +8,16 @@ import java.util.List;
 
 @Service
 public interface ProblemService {
-    void createProblem(ProblemVO problemVO);
+    void createProblem(FullProblemVO fullProblemVO);
 
     List<SimpleProblemVO>getProblems();
 
     ProblemVO getProblemDetail(String uuid) throws Exception;
 
+    FullProblemVO getFullProblemDetail(String uuid) throws Exception;
+
+
     void deleteProblem(String uuid) throws Exception;
 
-    void updateProblem(ProblemVO problemVO) throws Exception;
+    void updateProblem(FullProblemVO fullProblemVO) throws Exception;
 }

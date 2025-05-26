@@ -1,8 +1,8 @@
 package cn.edu.nju.supercode.controller;
 
-import cn.edu.nju.supercode.exception.UnauthorizedException;
 import cn.edu.nju.supercode.po.User;
 import cn.edu.nju.supercode.service.ProblemService;
+import cn.edu.nju.supercode.service.SubmissionService;
 import cn.edu.nju.supercode.util.UserUtil;
 import cn.edu.nju.supercode.vo.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,14 +22,8 @@ public class ProblemController {
     @Autowired
     ProblemService problemService;
 
-    @PostMapping("/create")
-    public ResultVO<String> createProblem(HttpServletRequest request,@RequestBody ProblemVO problemVO) throws Exception{
-        User operator=userUtil.getUser(request);
-        if(!userUtil.isAdmin(operator))
-            throw UnauthorizedException.noSuchPrivilege();//只有root和admin有权创建题目
-        problemService.createProblem(problemVO);
-        return ResultVO.buildSuccess("题目创建成功");
-    }
+    @Autowired
+    SubmissionService submissionService;
 
     @GetMapping("")
     public ResultVO<List<SimpleProblemVO>>getProblems(){
@@ -41,21 +35,24 @@ public class ProblemController {
         return ResultVO.buildSuccess(problemService.getProblemDetail(uuid));
     }
 
-    @DeleteMapping("/{uuid}")
-    public ResultVO<String>deleteProblem(@PathVariable String uuid,HttpServletRequest request) throws Exception{
-        User operator=userUtil.getUser(request);
-        if(!userUtil.isAdmin(operator))
-            throw UnauthorizedException.noSuchPrivilege();//只有root和admin有权删除题目
-        problemService.deleteProblem(uuid);
-        return ResultVO.buildSuccess("题目删除成功");
+    @PostMapping("/{uuid}")
+    public ResultVO<String>submit(@PathVariable String uuid,@RequestBody SubmissionVO submissionVO,HttpServletRequest request){
+        User user=userUtil.getUser(request);
+        submissionService.submit(user,uuid,submissionVO);
+        return ResultVO.buildSuccess("提交代码成功");
     }
 
-    @PutMapping("")
-    public ResultVO<String>updateProblem(HttpServletRequest request,@RequestBody ProblemVO problemVO) throws Exception{
-        User operator=userUtil.getUser(request);
-        if(!userUtil.isAdmin(operator))
-            throw UnauthorizedException.noSuchPrivilege();//只有root和admin有权更新题目
-        problemService.updateProblem(problemVO);
-        return ResultVO.buildSuccess("题目更新成功");
+    @GetMapping("/submit/{submitId}")
+    public ResultVO<SubmissionResultVO>getSingleSubmission(@PathVariable String submitId,HttpServletRequest request){
+        User user=userUtil.getUser(request);
+        return ResultVO.buildSuccess(submissionService.getSingleSubmission(user,submitId));
     }
+
+    @GetMapping("/submit")
+    public ResultVO<List<SimpleSubmissionResultVO>>getSimpleSubmissionsOfUser(HttpServletRequest request){
+        User user=userUtil.getUser(request);
+        return ResultVO.buildSuccess(submissionService.getResultsOfUser(user));
+    }
+
+
 }

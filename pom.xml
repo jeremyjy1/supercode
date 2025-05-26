@@ -74,6 +74,15 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.18.3</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.amqp</groupId>
+			<artifactId>spring-rabbit-stream</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-yaml</artifactId>
+			<version>2.19.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

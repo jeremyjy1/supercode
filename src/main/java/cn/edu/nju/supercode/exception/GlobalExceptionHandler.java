@@ -11,8 +11,8 @@ public class GlobalExceptionHandler {
         return ResultVO.notLogin(e.getMessage());
     }
 
-    @ExceptionHandler(value = UnauthorizedException.class)
-    public ResultVO<String> handleUnauthorizedException(UnauthorizedException e) {
+    @ExceptionHandler(value = ForbiddenException.class)
+    public ResultVO<String> handleUnauthorizedException(ForbiddenException e) {
         return ResultVO.forbidden(e.getMessage());
     }
 

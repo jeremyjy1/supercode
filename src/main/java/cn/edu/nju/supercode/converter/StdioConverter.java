@@ -1,6 +1,6 @@
 package cn.edu.nju.supercode.converter;
 
-import cn.edu.nju.supercode.vo.SampleVO;
+import cn.edu.nju.supercode.vo.StdioVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.AttributeConverter;
@@ -10,23 +10,23 @@ import java.util.Arrays;
 import java.util.List;
 
 @Converter
-public class SampleConverter implements AttributeConverter<List<SampleVO>,String> {
+public class StdioConverter implements AttributeConverter<List<StdioVO>,String> {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public String convertToDatabaseColumn(List<SampleVO> sampleVOList) {
+    public String convertToDatabaseColumn(List<StdioVO> stdioVOList) {
         try {
-            return objectMapper.writeValueAsString(sampleVOList);
+            return objectMapper.writeValueAsString(stdioVOList);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public List<SampleVO> convertToEntityAttribute(String s) {
+    public List<StdioVO> convertToEntityAttribute(String s) {
         try {
-            SampleVO[] samples=objectMapper.readValue(s,SampleVO[].class);
-            return Arrays.asList(samples);
+            StdioVO[] stdioVOS=objectMapper.readValue(s, StdioVO[].class);
+            return Arrays.asList(stdioVOS);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

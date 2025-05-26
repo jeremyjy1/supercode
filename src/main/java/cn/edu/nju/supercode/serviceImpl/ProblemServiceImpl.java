@@ -17,8 +17,8 @@ public class ProblemServiceImpl implements ProblemService {
     ProblemRepository problemRepository;
 
     @Override
-    public void createProblem(ProblemVO problemVO) {
-        Problem problem=problemVO.toPO();
+    public void createProblem(FullProblemVO fullProblemVO) {
+        Problem problem=fullProblemVO.toPO();
         problemRepository.save(problem);
     }
 
@@ -39,17 +39,23 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
+    public FullProblemVO getFullProblemDetail(String uuid) {
+        Problem problem=problemRepository.findById(uuid).orElseThrow(NotFoundException::problemNotFound);
+        return problem.toFullVO();
+    }
+
+    @Override
     public void deleteProblem(String uuid) {
         Problem problem=problemRepository.findById(uuid).orElseThrow(NotFoundException::problemNotFound);
         problemRepository.delete(problem);
     }
 
     @Override
-    public void updateProblem(ProblemVO problemVO) {
-        if (problemVO.getUuid() != null) {
-            if(problemRepository.findById(problemVO.getUuid()).isEmpty())
+    public void updateProblem(FullProblemVO fullProblemVO) {
+        if (fullProblemVO.getUuid() != null) {
+            if(problemRepository.findById(fullProblemVO.getUuid()).isEmpty())
                 throw NotFoundException.problemNotFound();
-            Problem problem=problemVO.toPO();
+            Problem problem=fullProblemVO.toPO();
             problemRepository.save(problem);
         }
         else

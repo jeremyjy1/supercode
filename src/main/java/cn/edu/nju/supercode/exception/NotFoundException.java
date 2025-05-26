@@ -11,4 +11,8 @@ public class NotFoundException extends RuntimeException {
 
     public static NotFoundException problemNotFound(){throw new NotFoundException("题目不存在");}
 
+    public static NotFoundException languageNotFound(){throw new NotFoundException("语言不存在");}
+
+    public static NotFoundException submissionNotFound(){throw new NotFoundException("评测记录不存在");}
+
 }
