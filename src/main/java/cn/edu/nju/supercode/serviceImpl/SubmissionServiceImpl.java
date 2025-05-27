@@ -14,6 +14,7 @@ import cn.edu.nju.supercode.stream.CMD;
 import cn.edu.nju.supercode.stream.Config;
 import cn.edu.nju.supercode.stream.Received;
 import cn.edu.nju.supercode.stream.Sent;
+import cn.edu.nju.supercode.util.OutputUtil;
 import cn.edu.nju.supercode.vo.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rabbitmq.stream.OffsetSpecification;
@@ -49,7 +50,6 @@ public class SubmissionServiceImpl implements SubmissionService {
                     ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
                     try {
                         Received received=mapper.readValue(new String(message.getBodyAsBinary()),Received.class);
-                        System.out.println(new String(message.getBodyAsBinary()));
                         PendingVO pendingVO= PendingSubmissions.pending.get(received.getSubmit_id());
                         Problem problem=problemRepository.findById(pendingVO.getProblemId()).orElseThrow(NotFoundException::problemNotFound);
                         List<StdioVO>stdioVOList=problem.getStdio();
@@ -68,8 +68,13 @@ public class SubmissionServiceImpl implements SubmissionService {
                                     time = received.getSandbox_results().get(i).getTime();
                                 if (received.getSandbox_results().get(i).getMemory() > memory)
                                     memory = received.getSandbox_results().get(i).getMemory();
+                                if(received.getSandbox_results().get(i).getTime()>problem.getTimeLimit())
+                                {
+                                    state="时间超限";
+                                    continue;
+                                }
                                 if (Objects.equals(received.getSandbox_results().get(i).getState(), "Success")) {
-                                    if (Objects.equals(received.getSandbox_results().get(i).getStdout(), stdioVOList.get(i - 2).getStdout()) && Objects.equals(received.getSandbox_results().get(i).getStderr(), stdioVOList.get(i - 2).getStderr()))
+                                    if (OutputUtil.judge(received.getSandbox_results().get(i).getStdout(), stdioVOList.get(i - 2).getStdout()) && OutputUtil.judge(received.getSandbox_results().get(i).getStderr(), stdioVOList.get(i - 2).getStderr()))
                                         passed++;
                                     else
                                         state = "答案错误";
@@ -88,6 +93,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                         int score=100*passed/sum;
                         Submission submission=pendingVO.toSubmission(time,memory,state,score,stdioVOList);
                         submissionRepository.save(submission);
+                        PendingSubmissions.pending.remove(pendingVO.getSubmitId());
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
@@ -111,7 +117,6 @@ public class SubmissionServiceImpl implements SubmissionService {
             throw NotFoundException.problemNotFound();
         PendingVO pendingVO=submissionVO.toPendingVO(problemId,user,submissionTime);
         PendingSubmissions.pending.put(pendingVO.getSubmitId(),pendingVO);
-        System.out.println(submissionVO.getCode());
         Environment environment=Environment.builder().build();
         String stream="Server2Runner";
         environment.streamCreator().stream(stream).maxLengthBytes(ByteCapacity.GB(1)).create();
@@ -121,7 +126,7 @@ public class SubmissionServiceImpl implements SubmissionService {
         if(Objects.equals(submissionVO.getLang(), "C")){
             sent.setImage("gcc:14.2");
             List<CMD>commands = new ArrayList<>();
-            CMD save=new CMD("sh",List.of("-c","echo '".concat(pendingVO.getCode()).concat("' > main.c")),"",new Config());
+            CMD save=new CMD("bash",List.of("-c","echo '".concat(pendingVO.getCode()).concat("' > main.c")),"",new Config());
             commands.add(save);
             CMD compile=new CMD("gcc",List.of("main.c","-o","main"),"",new Config());
             commands.add(compile);
@@ -145,7 +150,7 @@ public class SubmissionServiceImpl implements SubmissionService {
         else if(Objects.equals(submissionVO.getLang(), "C++")){
             sent.setImage("gcc:14.2");
             List<CMD>commands = new ArrayList<>();
-            CMD save=new CMD("sh",List.of("-c","echo '".concat(pendingVO.getCode()).concat("' > main.cpp")),"",new Config());
+            CMD save=new CMD("bash",List.of("-c","echo '".concat(pendingVO.getCode()).concat("' > main.cpp")),"",new Config());
             commands.add(save);
             CMD compile=new CMD("g++",List.of("main.cpp","-o","main"),"",new Config());
             commands.add(compile);
@@ -169,7 +174,7 @@ public class SubmissionServiceImpl implements SubmissionService {
         else if(Objects.equals(submissionVO.getLang(), "Java")){
             sent.setImage("openjdk:21");
             List<CMD>commands = new ArrayList<>();
-            CMD save=new CMD("sh",List.of("-c","echo '".concat(pendingVO.getCode()).concat("' > Main.java")),"",new Config());
+            CMD save=new CMD("bash",List.of("-c","echo '".concat(pendingVO.getCode()).concat("' > Main.java")),"",new Config());
             commands.add(save);
             CMD compile=new CMD("javac",List.of("Main.java"),"",new Config());
             commands.add(compile);

@@ -25,8 +25,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createUser(UserVO user) throws Exception{
-        if(!Objects.equals(user.getRole(), "user"))
-            throw ForbiddenException.noSuchPrivilege();//只能允许创建类型为user的用户，后期再进行授权
         if(userRepository.findByUsername(user.getUsername())!=null)
             throw ConflictException.userExisted();//用户不可以和已有用户重名
         userRepository.save(user.toPO());

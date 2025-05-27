@@ -104,6 +104,6 @@ public class Problem {
     }
 
     public Config toConfig(){
-        return new Config(timeLimit,timeReserved,memoryLimit,memoryReserved,largeStack,outputLimit,processLimit);
+        return new Config((timeLimit+1000-1)/1000,timeReserved,memoryLimit,memoryReserved,largeStack,outputLimit,processLimit);
     }
 }

@@ -31,8 +31,8 @@ public class ManagerController {
 
     @PostMapping("/user/create")
     public ResultVO<String> createUser(HttpServletRequest request,@RequestBody UserVO userVO) throws Exception {
-        User user=userUtil.getUser(request);
-        if(!userUtil.isAdmin(user))
+        User operator=userUtil.getUser(request),operatee=userVO.toPO();
+        if(!userUtil.canOperate(operator,operatee))
             throw ForbiddenException.noSuchPrivilege();
         userService.createUser(userVO);
         return ResultVO.buildSuccess("创建用户成功");
