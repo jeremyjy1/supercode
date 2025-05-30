@@ -33,7 +33,7 @@ public class UserController {
         cookie.setMaxAge(24*60*60);
         request.addCookie(cookie);
         request.addHeader("token",result);//设定cookie
-        return ResultVO.buildSuccess("登录成功");
+        return ResultVO.buildSuccess(result);
     }
 
     @PostMapping("/password")
