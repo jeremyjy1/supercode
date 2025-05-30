@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Converter
-public class StdioConverter implements AttributeConverter<List<StdioVO>,String> {
+public class StdioConverter implements AttributeConverter<List<StdioVO>, String> {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
@@ -25,7 +25,7 @@ public class StdioConverter implements AttributeConverter<List<StdioVO>,String> 
     @Override
     public List<StdioVO> convertToEntityAttribute(String s) {
         try {
-            StdioVO[] stdioVOS=objectMapper.readValue(s, StdioVO[].class);
+            StdioVO[] stdioVOS = objectMapper.readValue(s, StdioVO[].class);
             return Arrays.asList(stdioVOS);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

@@ -27,34 +27,34 @@ public class UserController {
 
     @PostMapping("/login")
     public ResultVO<String> login(HttpServletResponse request, @RequestBody LoginVO loginVO) {
-        String result=userService.login(loginVO.getUsername(), loginVO.getPassword());
-        Cookie cookie=new Cookie("token",result);
+        String result = userService.login(loginVO.getUsername(), loginVO.getPassword());
+        Cookie cookie = new Cookie("token", result);
         cookie.setPath("/");
-        cookie.setMaxAge(24*60*60);
+        cookie.setMaxAge(24 * 60 * 60);
         request.addCookie(cookie);
-        request.addHeader("token",result);//设定cookie
+        request.addHeader("token", result);//设定cookie
         return ResultVO.buildSuccess(result);
     }
 
     @PostMapping("/password")
     public ResultVO<String> changePassword(@RequestBody PasswordVO passwordVO, HttpServletRequest request) throws Exception {
-        User user=userUtil.getUser(request);
-        userService.changePassword(user,passwordVO);
+        User user = userUtil.getUser(request);
+        userService.changePassword(user, passwordVO);
         return ResultVO.buildSuccess("密码修改成功");
     }
 
     @PutMapping("/updateUser")
     public ResultVO<String> updateUser(HttpServletRequest request, @RequestBody UpdateUserVO updateUserVO) throws Exception {
-        User operator=userUtil.getUser(request),operatee=userRepository.findByUsername(updateUserVO.getUsername());
-        if(!userUtil.canOperate(operator,operatee)&&!userUtil.isSelf(operator,operatee))
+        User operator = userUtil.getUser(request), operatee = userRepository.findByUsername(updateUserVO.getUsername());
+        if (!userUtil.canOperate(operator, operatee) && !userUtil.isSelf(operator, operatee))
             throw ForbiddenException.noSuchPrivilege();//要不是更新自己的信息，要不是管理员在更新他人的信息
         userService.updateUser(updateUserVO);
         return ResultVO.buildSuccess("更新信息成功");
     }
 
     @GetMapping("")
-    public ResultVO<RetUserVO> getProfile(HttpServletRequest request){//获取个人信息
-        User user=userUtil.getUser(request);
+    public ResultVO<RetUserVO> getProfile(HttpServletRequest request) {//获取个人信息
+        User user = userUtil.getUser(request);
         return ResultVO.buildSuccess(userService.getProfile(user));
     }
 }

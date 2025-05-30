@@ -25,9 +25,10 @@ public class FullProblemVO {
     private Integer processLimit;
     private List<StdioVO> exampleStdio;
     private List<StdioVO> stdio;
-    public Problem toPO(){
-        Problem problem=new Problem();
-        if(uuid!=null)
+
+    public Problem toPO() {
+        Problem problem = new Problem();
+        if (uuid != null)
             problem.setUuid(uuid);
         problem.setTitle(title);
         problem.setDescription(description);

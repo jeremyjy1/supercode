@@ -1,13 +1,11 @@
 package cn.edu.nju.supercode.vo;
 
-import cn.edu.nju.supercode.po.User;
 import io.micrometer.common.lang.Nullable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter

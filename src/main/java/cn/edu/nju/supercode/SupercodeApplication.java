@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SupercodeApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SupercodeApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SupercodeApplication.class, args);
+    }
 
 }

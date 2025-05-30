@@ -1,10 +1,10 @@
 package cn.edu.nju.supercode.util;
 
+import cn.edu.nju.supercode.po.User;
+import cn.edu.nju.supercode.repository.UserRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import cn.edu.nju.supercode.po.User;
-import cn.edu.nju.supercode.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,8 @@
 package cn.edu.nju.supercode.service;
 
-import cn.edu.nju.supercode.po.User;
-import cn.edu.nju.supercode.vo.*;
+import cn.edu.nju.supercode.vo.FullProblemVO;
+import cn.edu.nju.supercode.vo.ProblemVO;
+import cn.edu.nju.supercode.vo.SimpleProblemVO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface ProblemService {
     void createProblem(FullProblemVO fullProblemVO);
 
-    List<SimpleProblemVO>getProblems();
+    List<SimpleProblemVO> getProblems();
 
     ProblemVO getProblemDetail(String uuid) throws Exception;
 

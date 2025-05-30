@@ -26,31 +26,31 @@ public class ProblemController {
     SubmissionService submissionService;
 
     @GetMapping("")
-    public ResultVO<List<SimpleProblemVO>>getProblems(){
+    public ResultVO<List<SimpleProblemVO>> getProblems() {
         return ResultVO.buildSuccess(problemService.getProblems());
     }
 
     @GetMapping("/{uuid}")
-    public ResultVO<ProblemVO>getSingleProblem(@PathVariable String uuid) throws Exception{
+    public ResultVO<ProblemVO> getSingleProblem(@PathVariable String uuid) throws Exception {
         return ResultVO.buildSuccess(problemService.getProblemDetail(uuid));
     }
 
     @PostMapping("/{uuid}")
-    public ResultVO<String>submit(@PathVariable String uuid,@RequestBody SubmissionVO submissionVO,HttpServletRequest request){
-        User user=userUtil.getUser(request);
-        submissionService.submit(user,uuid,submissionVO);
+    public ResultVO<String> submit(@PathVariable String uuid, @RequestBody SubmissionVO submissionVO, HttpServletRequest request) {
+        User user = userUtil.getUser(request);
+        submissionService.submit(user, uuid, submissionVO);
         return ResultVO.buildSuccess("提交代码成功");
     }
 
     @GetMapping("/submit/{submitId}")
-    public ResultVO<SubmissionResultVO>getSingleSubmission(@PathVariable String submitId,HttpServletRequest request){
-        User user=userUtil.getUser(request);
-        return ResultVO.buildSuccess(submissionService.getSingleSubmission(user,submitId));
+    public ResultVO<SubmissionResultVO> getSingleSubmission(@PathVariable String submitId, HttpServletRequest request) {
+        User user = userUtil.getUser(request);
+        return ResultVO.buildSuccess(submissionService.getSingleSubmission(user, submitId));
     }
 
     @GetMapping("/submit")
-    public ResultVO<List<SimpleSubmissionResultVO>>getSimpleSubmissionsOfUser(HttpServletRequest request){
-        User user=userUtil.getUser(request);
+    public ResultVO<List<SimpleSubmissionResultVO>> getSimpleSubmissionsOfUser(HttpServletRequest request) {
+        User user = userUtil.getUser(request);
         return ResultVO.buildSuccess(submissionService.getResultsOfUser(user));
     }
 

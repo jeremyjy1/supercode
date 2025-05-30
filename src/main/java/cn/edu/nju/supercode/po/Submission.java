@@ -30,7 +30,7 @@ public class Submission {
     private String userId;
 
     @Basic
-    @Column(name = "code", nullable = false,columnDefinition = "LONGTEXT")
+    @Column(name = "code", nullable = false, columnDefinition = "LONGTEXT")
     private String code;
 
     @Basic
@@ -54,16 +54,16 @@ public class Submission {
     private String result;
 
     @Basic
-    @Column(name="stdio",nullable = false,columnDefinition = "LONGTEXT")
-    @Convert(converter= StdioConverter.class)
+    @Column(name = "stdio", nullable = false, columnDefinition = "LONGTEXT")
+    @Convert(converter = StdioConverter.class)
     private List<StdioVO> stdio;
 
     @Basic
     @Column(name = "submission_time", nullable = false)
     private LocalDateTime submissionTime;
 
-    public SubmissionResultVO toSubmissionResultVO(){
-        SubmissionResultVO submissionResultVO=new SubmissionResultVO();
+    public SubmissionResultVO toSubmissionResultVO() {
+        SubmissionResultVO submissionResultVO = new SubmissionResultVO();
         submissionResultVO.setSubmitId(submissionId);
         submissionResultVO.setProblemId(problemId);
         submissionResultVO.setCode(code);
@@ -76,8 +76,8 @@ public class Submission {
         return submissionResultVO;
     }
 
-    public SimpleSubmissionResultVO toSimpleSubmissionResultVO(){
-        SimpleSubmissionResultVO simpleSubmissionResultVO=new SimpleSubmissionResultVO();
+    public SimpleSubmissionResultVO toSimpleSubmissionResultVO() {
+        SimpleSubmissionResultVO simpleSubmissionResultVO = new SimpleSubmissionResultVO();
         simpleSubmissionResultVO.setSubmitId(submissionId);
         simpleSubmissionResultVO.setProblemId(problemId);
         simpleSubmissionResultVO.setScore(score);

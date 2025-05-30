@@ -4,8 +4,8 @@ import cn.edu.nju.supercode.converter.StdioConverter;
 import cn.edu.nju.supercode.stream.Config;
 import cn.edu.nju.supercode.vo.FullProblemVO;
 import cn.edu.nju.supercode.vo.ProblemVO;
-import cn.edu.nju.supercode.vo.StdioVO;
 import cn.edu.nju.supercode.vo.SimpleProblemVO;
+import cn.edu.nju.supercode.vo.StdioVO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,7 @@ public class Problem {
     private String title;
 
     @Basic
-    @Column(name = "description", nullable = false,columnDefinition = "LONGTEXT")
+    @Column(name = "description", nullable = false, columnDefinition = "LONGTEXT")
     private String description;
 
     @Basic
@@ -60,17 +60,17 @@ public class Problem {
     private Integer processLimit;
 
     @Basic
-    @Column(name="example_stdio",nullable = false,columnDefinition = "LONGTEXT")
-    @Convert(converter= StdioConverter.class)
+    @Column(name = "example_stdio", nullable = false, columnDefinition = "LONGTEXT")
+    @Convert(converter = StdioConverter.class)
     private List<StdioVO> exampleStdio;
 
     @Basic
-    @Column(name="stdio",nullable = false,columnDefinition = "LONGTEXT")
-    @Convert(converter= StdioConverter.class)
+    @Column(name = "stdio", nullable = false, columnDefinition = "LONGTEXT")
+    @Convert(converter = StdioConverter.class)
     private List<StdioVO> stdio;
 
-    public ProblemVO toVO(){
-        ProblemVO problemVO=new ProblemVO();
+    public ProblemVO toVO() {
+        ProblemVO problemVO = new ProblemVO();
         problemVO.setUuid(uuid);
         problemVO.setTitle(title);
         problemVO.setDescription(description);
@@ -80,8 +80,8 @@ public class Problem {
         return problemVO;
     }
 
-    public FullProblemVO toFullVO(){
-        FullProblemVO fullProblemVO=new FullProblemVO();
+    public FullProblemVO toFullVO() {
+        FullProblemVO fullProblemVO = new FullProblemVO();
         fullProblemVO.setUuid(uuid);
         fullProblemVO.setTitle(title);
         fullProblemVO.setDescription(description);
@@ -96,14 +96,14 @@ public class Problem {
         return fullProblemVO;
     }
 
-    public SimpleProblemVO toSimpleVO(){
-        SimpleProblemVO simpleProblemVO=new SimpleProblemVO();
+    public SimpleProblemVO toSimpleVO() {
+        SimpleProblemVO simpleProblemVO = new SimpleProblemVO();
         simpleProblemVO.setUuid(uuid);
         simpleProblemVO.setTitle(title);
         return simpleProblemVO;
     }
 
-    public Config toConfig(){
-        return new Config((timeLimit+1000-1)/1000,timeReserved,memoryLimit,memoryReserved,largeStack,outputLimit,processLimit);
+    public Config toConfig() {
+        return new Config((timeLimit + 1000 - 1) / 1000, timeReserved, memoryLimit, memoryReserved, largeStack, outputLimit, processLimit);
     }
 }

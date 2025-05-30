@@ -13,14 +13,15 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class PendingVO {
+    public User user;
     private String submitId;
     private String problemId;
-    public User user;
     private String lang;
     private String code;
     private LocalDateTime submissionTime;
-    public SubmissionResultVO toSubmissionResultVO(){
-        SubmissionResultVO submissionResultVO=new SubmissionResultVO();
+
+    public SubmissionResultVO toSubmissionResultVO() {
+        SubmissionResultVO submissionResultVO = new SubmissionResultVO();
         submissionResultVO.setSubmitId(submitId);
         submissionResultVO.setProblemId(problemId);
         submissionResultVO.setLang(lang);
@@ -30,8 +31,8 @@ public class PendingVO {
         return submissionResultVO;
     }
 
-    public SimpleSubmissionResultVO toSimpleSubmissionResultVO(){
-        SimpleSubmissionResultVO simpleSubmissionResultVO=new SimpleSubmissionResultVO();
+    public SimpleSubmissionResultVO toSimpleSubmissionResultVO() {
+        SimpleSubmissionResultVO simpleSubmissionResultVO = new SimpleSubmissionResultVO();
         simpleSubmissionResultVO.setSubmitId(submitId);
         simpleSubmissionResultVO.setProblemId(problemId);
         simpleSubmissionResultVO.setLang(lang);
@@ -40,8 +41,8 @@ public class PendingVO {
         return simpleSubmissionResultVO;
     }
 
-    public Submission toSubmission(Integer time, Integer memory, String result, Integer score,List<StdioVO> stdioVOList){
-        Submission submission=new Submission();
+    public Submission toSubmission(Integer time, Integer memory, String result, Integer score, List<StdioVO> stdioVOList) {
+        Submission submission = new Submission();
         submission.setSubmissionId(submitId);
         submission.setProblemId(problemId);
         submission.setUserId(user.getUuid());

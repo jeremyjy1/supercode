@@ -14,8 +14,9 @@ import java.util.UUID;
 public class SubmissionVO {
     private String lang;
     private String code;
-    public PendingVO toPendingVO(String problemId, User user, LocalDateTime submissionTime){
-        PendingVO pendingVO=new PendingVO();
+
+    public PendingVO toPendingVO(String problemId, User user, LocalDateTime submissionTime) {
+        PendingVO pendingVO = new PendingVO();
         pendingVO.setProblemId(problemId);
         pendingVO.setLang(lang);
         pendingVO.setCode(code);

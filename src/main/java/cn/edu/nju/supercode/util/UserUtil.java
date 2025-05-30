@@ -15,10 +15,9 @@ public class UserUtil {
     TokenUtil tokenUtil;
 
     public User getUser(HttpServletRequest request) throws LoginException {
-        String token=request.getHeader("token");
-        if(token!=null)
-        {
-            if(tokenUtil.verifyToken(token))
+        String token = request.getHeader("token");
+        if (token != null) {
+            if (tokenUtil.verifyToken(token))
                 return tokenUtil.getUser(token);
         }
         Cookie[] cookies = request.getCookies();
@@ -36,19 +35,19 @@ public class UserUtil {
         return tokenUtil.getUser(token);
     }
 
-    public boolean isAdmin(User user){
+    public boolean isAdmin(User user) {
         return Objects.equals(user.getRole(), "admin") || Objects.equals(user.getRole(), "root");
     }
 
-    public boolean canOperate(User operator,User operatee){
-        if(operator==null||operatee==null)
+    public boolean canOperate(User operator, User operatee) {
+        if (operator == null || operatee == null)
             return false;
-        if(Objects.equals(operator.getRole(), "root") && !Objects.equals(operatee.getRole(), "root"))
+        if (Objects.equals(operator.getRole(), "root") && !Objects.equals(operatee.getRole(), "root"))
             return true;
         return Objects.equals(operator.getRole(), "admin") && Objects.equals(operatee.getRole(), "user");
     }
 
-    public boolean isSelf(User operator,User operatee){
+    public boolean isSelf(User operator, User operatee) {
         return Objects.equals(operator.getUuid(), operatee.getUuid());
     }
 }

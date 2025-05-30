@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Result{
+public class Result {
     private String state;
     private String stdout;
     private String stderr;

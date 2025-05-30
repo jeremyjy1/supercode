@@ -16,11 +16,12 @@ public class UserVO {
     private String nickname;
     private String email;
     private String role;
-    public User toPO(){
-        User user=new User();
+
+    public User toPO() {
+        User user = new User();
         user.setUsername(username);
         user.setSalt(RandomStringUtils.randomAlphanumeric(128));//生成盐
-        user.setPassword(DigestUtils.sha512Hex(password+user.getSalt()));//生成处理后的密码
+        user.setPassword(DigestUtils.sha512Hex(password + user.getSalt()));//生成处理后的密码
         user.setNickname(nickname);
         user.setEmail(email);
         user.setRole(role);

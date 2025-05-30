@@ -8,5 +8,5 @@ import java.util.Map;
 
 @Component
 public class PendingSubmissions {
-    public static final Map<String,PendingVO> pending = new HashMap<>();
+    public static final Map<String, PendingVO> pending = new HashMap<>();
 }

@@ -40,8 +40,8 @@ public class User {
     @Column(name = "role", nullable = false)
     private String role;
 
-    public RetUserVO toRetVO(){
-        RetUserVO retUserVO=new RetUserVO();
+    public RetUserVO toRetVO() {
+        RetUserVO retUserVO = new RetUserVO();
         retUserVO.setUsername(username);
         retUserVO.setNickname(nickname);
         retUserVO.setEmail(email);

@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class Sent {
-    List<CMD>commands;
+    List<CMD> commands;
     String image;
     String submit_id;
 }
