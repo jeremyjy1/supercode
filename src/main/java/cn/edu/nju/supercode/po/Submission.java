@@ -72,6 +72,7 @@ public class Submission {
         submissionResultVO.setTime(time);
         submissionResultVO.setMemory(memory);
         submissionResultVO.setResult(result);
+        submissionResultVO.setSubmissionTime(submissionTime);
         return submissionResultVO;
     }
 
@@ -84,6 +85,7 @@ public class Submission {
         simpleSubmissionResultVO.setTime(time);
         simpleSubmissionResultVO.setMemory(memory);
         simpleSubmissionResultVO.setResult(result);
+        simpleSubmissionResultVO.setSubmissionTime(submissionTime);
         return simpleSubmissionResultVO;
     }
 }
