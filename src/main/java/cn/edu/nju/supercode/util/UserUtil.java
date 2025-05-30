@@ -15,10 +15,16 @@ public class UserUtil {
     TokenUtil tokenUtil;
 
     public User getUser(HttpServletRequest request) throws LoginException {
+        String token=request.getHeader("token");
+        if(token!=null)
+        {
+            if(tokenUtil.verifyToken(token))
+                return tokenUtil.getUser(token);
+        }
         Cookie[] cookies = request.getCookies();
         if (cookies == null)
             throw LoginException.loginRequired();
-        String token = null;
+        token = null;
         for (Cookie cookie : cookies) {
             if (Objects.equals(cookie.getName(), "token")) {
                 token = cookie.getValue();
