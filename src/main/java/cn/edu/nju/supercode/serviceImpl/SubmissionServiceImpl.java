@@ -221,6 +221,7 @@ public class SubmissionServiceImpl implements SubmissionService {
         for (Submission i : submissions) {
             simpleSubmissionResultVOList.add(i.toSimpleSubmissionResultVO());
         }
+        simpleSubmissionResultVOList.sort((a,b)->{return b.getSubmissionTime().compareTo(a.getSubmissionTime());});
         return simpleSubmissionResultVOList;
     }
 }
